@@ -36,4 +36,27 @@ public interface GetEnumType{
             return null;
         }
     }
+    default boolean equals(String value){
+		Class<?> clazz=null;
+		try {
+			clazz=this.getClass();
+			if(!Enum.class.isAssignableFrom(clazz))
+				throw new IllegalStateException("method : \"getType\" can only be invoked in class which extends enum !");
+			Field field=clazz.getDeclaredField("value");
+			field.setAccessible(true);
+			Object obj=field.get(this);
+			if(obj!=null)
+				return obj.equals(value);
+			if(value!=null)
+				return value.equals(obj);
+			return true;
+		}
+		catch (NoSuchFieldException e) {
+			throw new IllegalArgumentException("枚举类:"+clazz.getName()+"中不包含value字段!");
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 }
