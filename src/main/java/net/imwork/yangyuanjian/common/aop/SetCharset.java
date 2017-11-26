@@ -6,6 +6,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import java.lang.reflect.Method;
  */
 @Aspect
 @Component
+@Order(-10)
 public class SetCharset {
     @Pointcut("@within(net.imwork.yangyuanjian.common.annotation.SetUtf8)")
     public void setCharset(){}

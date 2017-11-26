@@ -12,8 +12,7 @@ import java.util.List;
 /**
  * Created by thunderobot on 2017/11/18.
  */
-@EasyLog(LogFactory.LogLevel.INFO)
-@Service("managerService")
+
 public class ManagerServiceImpl implements ManagerService{
     @Override
     public Boolean addManager(Manager manager) {

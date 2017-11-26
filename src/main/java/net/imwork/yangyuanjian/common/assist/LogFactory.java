@@ -47,13 +47,13 @@ public class LogFactory {
 //			properties.setProperty("log4j.appender.INFO.layout", "org.apache.log4j.PatternLayout");
 //			properties.setProperty("log4j.appender.INFO.layout.ConversionPattern", "%d %p [%c] - <%m>%n");
             //配置每日生成日志文件 形式的日志对象
-            properties.setProperty("log4j.appender.debug", "com.lanxi.util.entity.LogAppender");
+            properties.setProperty("log4j.appender.debug", "net.imwork.yangyuanjian.common.assist.LogAppender");
             //配置日志文件路径
             properties.setProperty("log4j.appender.debug.File", path+"/debug/debug.log");
-            File dir=new File(path+"debug");
+            File dir=new File(path+"/debug");
             if(!dir.exists())
-                dir.mkdir();
-            dir=new File(dir.getAbsolutePath()+"debug.log");
+                dir.mkdirs();
+            dir=new File(dir.getAbsolutePath()+"/debug.log");
             if(!dir.exists())
                 dir.createNewFile();
             properties.setProperty("log4j.appender.debug.Threshold", "DEBUG");
@@ -68,13 +68,13 @@ public class LogFactory {
             //配置日志文件表达式
             properties.setProperty("log4j.appender.debug.layout.ConversionPattern", "%d %p [%c] - <%m>%n");
             //配置每日生成日志文件 形式的日志对象
-            properties.setProperty("log4j.appender.info", "com.lanxi.util.entity.LogAppender");
+            properties.setProperty("log4j.appender.info", "net.imwork.yangyuanjian.common.assist.LogAppender");
             //配置日志文件路径
             properties.setProperty("log4j.appender.info.File", path+"/info/info.log");
-            dir=new File(path+"info");
+            dir=new File(path+"/info");
             if(!dir.exists())
-                dir.mkdir();
-            dir=new File(dir.getAbsolutePath()+"info.log");
+                dir.mkdirs();
+            dir=new File(dir.getAbsolutePath()+"/info.log");
             if(!dir.exists())
                 dir.createNewFile();
             properties.setProperty("log4j.appender.info.Threshold", "INFO");
@@ -89,13 +89,13 @@ public class LogFactory {
             //配置日志文件表达式
             properties.setProperty("log4j.appender.info.layout.ConversionPattern", "%d %p [%c] - <%m>%n");
             //配置每日生成日志文件 形式的日志对象
-            properties.setProperty("log4j.appender.warn", "com.lanxi.util.entity.LogAppender");
+            properties.setProperty("log4j.appender.warn", "net.imwork.yangyuanjian.common.assist.LogAppender");
             //配置日志文件路径
             properties.setProperty("log4j.appender.warn.File", path+"/warn/warn.log");
-            dir=new File(path+"warn");
+            dir=new File(path+"/warn");
             if(!dir.exists())
-                dir.mkdir();
-            dir=new File(dir.getAbsolutePath()+"warn.log");
+                dir.mkdirs();
+            dir=new File(dir.getAbsolutePath()+"/warn.log");
             if(!dir.exists())
                 dir.createNewFile();
             properties.setProperty("log4j.appender.warn.Threshold", "WARN");
@@ -110,13 +110,13 @@ public class LogFactory {
             //配置日志文件表达式
             properties.setProperty("log4j.appender.warn.layout.ConversionPattern", "%d %p [%c] - <%m>%n");
             //配置每日生成日志文件 形式的日志对象
-            properties.setProperty("log4j.appender.error", "com.lanxi.util.entity.LogAppender");
+            properties.setProperty("log4j.appender.error", "net.imwork.yangyuanjian.common.assist.LogAppender");
             //配置日志文件路径
             properties.setProperty("log4j.appender.error.File", path+"/error/error.log");
-            dir=new File(path+"error");
+            dir=new File(path+"/error");
             if(!dir.exists())
-                dir.mkdir();
-            dir=new File(dir.getAbsolutePath()+"error.log");
+                dir.mkdirs();
+            dir=new File(dir.getAbsolutePath()+"/error.log");
             if(!dir.exists())
                 dir.createNewFile();
             properties.setProperty("log4j.appender.error.Threshold", "ERROR");
@@ -135,7 +135,6 @@ public class LogFactory {
             properties.setProperty("log4j.appender.console.layout", "org.apache.log4j.PatternLayout");
             properties.setProperty("log4j.appender.console.layout.ConversionPattern", "%d %p [%c] - <%m>%n");
             PropertyConfigurator.configure(properties);
-            System.out.println("log4j初始化完成!");
             LogFactory.info(LogFactory.class,"log4j初始化完成!");
         } catch (Exception e) {
             throw new RuntimeException("加载log4j配置异常", e);

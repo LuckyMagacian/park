@@ -12,15 +12,11 @@ import javax.annotation.Resource;
  */
 @Service("daoService")
 public class DaoServiceImpl implements DaoService{
-    @Resource
     private CustomerInfoDao customerInfoDao;
-    @Resource
     private ManagerDao managerDao;
     @Resource
     private ParkDao parkDao;
-    @Resource
     private ParkRequestDao parkRequestDao;
-    @Resource
     private ParkServerDao parkServerDao;
 
     public CustomerInfoDao getCustomerInfoDao() {

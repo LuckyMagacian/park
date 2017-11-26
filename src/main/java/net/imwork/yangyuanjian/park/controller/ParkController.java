@@ -1,10 +1,12 @@
 package net.imwork.yangyuanjian.park.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.toolkit.IdWorker;
 import net.imwork.yangyuanjian.common.annotation.EasyLog;
+import net.imwork.yangyuanjian.common.annotation.SetUtf8;
 import net.imwork.yangyuanjian.common.assist.LogFactory;
 import net.imwork.yangyuanjian.common.assist.RetMessage;
 import net.imwork.yangyuanjian.common.assist.TimeUtil;
@@ -40,8 +42,9 @@ public class ParkController {
     private Map<String,File> files=new HashMap<>();
     private Map<String,Boolean> chekResult=new HashMap<>();
 
-    @RequestMapping
+    @RequestMapping(value = "queryInfo" ,produces="application/json;charset=utf-8")
     @ResponseBody
+    @SetUtf8
     public String queryParkInfo(HttpServletRequest req, HttpServletResponse res){
         RetMessage message=new RetMessage();
         String parkIdStr=req.getParameter("parkId");
@@ -50,8 +53,9 @@ public class ParkController {
         message.setAll(SUCCESS,"查询成功!",park);
         return message.toJson();
     }
-    @RequestMapping
+    @RequestMapping(value = "queryParks",produces="application/json;charset=utf-8")
     @ResponseBody
+    @SetUtf8
     public String queryParks(HttpServletRequest req,HttpServletResponse res){
         RetMessage message=new RetMessage();
 
@@ -95,8 +99,9 @@ public class ParkController {
 
         return message.toJson();
     }
-    @RequestMapping
+    @RequestMapping(value = "addPark",produces="application/json;charset=utf-8")
     @ResponseBody
+    @SetUtf8
     public String addPark(HttpServletRequest req,HttpServletResponse res){
         RetMessage message=new RetMessage();
         String name=req.getParameter("name");
@@ -140,8 +145,9 @@ public class ParkController {
         message.setAll(SUCCESS,"添加成功!",result);
         return message.toJson();
     }
-    @RequestMapping
+    @RequestMapping(value = "addParks",produces="application/json;charset=utf-8")
     @ResponseBody
+    @SetUtf8
     public String addParks(HttpServletRequest req,HttpServletResponse res){
         RetMessage message=new RetMessage();
         String sessionId=req.getSession().getId();
@@ -174,8 +180,9 @@ public class ParkController {
             return message.toJson();
         }
     }
-    @RequestMapping
+    @SetUtf8
     @ResponseBody
+    @RequestMapping(value = "confirmAddParks",produces="application/json;charset=utf-8")
     public String sureAddParks(HttpServletRequest req,HttpServletResponse res){
         RetMessage message=new RetMessage();
         String sessionId=req.getSession().getId();
@@ -192,7 +199,9 @@ public class ParkController {
         }
         return message.toJson();
     }
-
+    @SetUtf8
+    @ResponseBody
+    @RequestMapping(value = "modifyPark",produces="application/json;charset=utf-8")
     public String modifyPark(HttpServletRequest req,HttpServletResponse res){
         RetMessage message=new RetMessage();
         String parkIdStr=req.getParameter("parkId");
@@ -246,5 +255,16 @@ public class ParkController {
         return message.toJson();
     }
 
-
+    @SetUtf8
+    @ResponseBody
+    @RequestMapping(value = "test",produces="application/json;charset=utf-8")
+    public String test(HttpServletRequest req,HttpServletResponse res) {
+        String sessionId=req.getSession().getId();
+        String reqCharset=req.getCharacterEncoding();
+        String resCharset=req.getCharacterEncoding();
+        System.out.println(sessionId);
+        System.out.println(reqCharset);
+        System.out.println(resCharset);
+        return JSON.toJSONString(new String[]{sessionId,reqCharset,reqCharset});
+    }
 }

@@ -11,7 +11,7 @@ import java.io.Serializable;
 /**
  * Created by thunderobot on 2017/11/18.
  */
-@TableName("manager")
+//@TableName("manager")
 public class Manager extends Model<Manager> implements CommonEntityMethod{
     /**管理员编号*/
     @TableId("id")

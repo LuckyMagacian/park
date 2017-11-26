@@ -53,7 +53,7 @@
     <!-- mybatis-plus配置 -->
     <bean id="ssfb" class="com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean">
         <property name="dataSource" ref="ds"></property>
-        <property name="mapperLocations" value="classpath:net/imwork/yangyuanjian/park/dao/ParkDao.xml"></property>
+        <property name="mapperLocations" value="classpath:net/imwork/yangyuanjian/park/dao/*.xml"></property>
         <property name="plugins">
             <list>
                 <!-- 分页插件配置 -->
@@ -73,6 +73,6 @@
     <!--</bean>-->
     <!--mapper扫描-->
     <bean id="mappers" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="net.imwork.yangyuanjian.park.dao*"></property>
+        <property name="basePackage" value="net.imwork.yangyuanjian.park.dao"></property>
     </bean>
 </beans>

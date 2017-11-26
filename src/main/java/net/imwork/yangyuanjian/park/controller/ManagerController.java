@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 /**
  * Created by thunderobot on 2017/11/18.
  */
-@EasyLog(LogFactory.LogLevel.INFO)
-@Controller
+
 public class ManagerController {
 }
