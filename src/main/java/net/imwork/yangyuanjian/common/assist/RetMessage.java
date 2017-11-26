@@ -9,6 +9,13 @@ import java.io.Serializable;
  * Created by thunderobot on 2017/11/18.
  */
 public class RetMessage implements ToJson{
+    public static final String SUCCESS="0000";
+
+    public static final String FAIL="9000";
+
+    public static final String ERROR="9999";
+
+
     /**返回码*/
     private String retCode;
     /**返回信息*/
@@ -20,6 +27,17 @@ public class RetMessage implements ToJson{
     }
 
     public RetMessage(String retCode, String retMessage,Serializable  detail) {
+        this.retCode = retCode;
+        this.retMessage = retMessage;
+        this.detail = detail;
+    }
+
+    public void setCodeAndMessage(String retCode, String retMessage){
+        this.retCode = retCode;
+        this.retMessage = retMessage;
+    }
+
+    public void setAll(String retCode, String retMessage,Serializable  detail){
         this.retCode = retCode;
         this.retMessage = retMessage;
         this.detail = detail;

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotations.TableName;
 import net.imwork.yangyuanjian.common.interfaces.CommonEntityMethod;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -17,9 +18,15 @@ public class Park extends Model<Park> implements CommonEntityMethod{
     /**停车场编号*/
     @TableId("id")
     private Long id;
+
+
+
     /**停车场名称*/
     @TableField("name")
     private String name;
+    /**停车场所在省份*/
+    @TableField("province")
+    private String province;
     /**停车场所在城市*/
     @TableField("city")
     private String city;
@@ -33,11 +40,11 @@ public class Park extends Model<Park> implements CommonEntityMethod{
     @TableField("status")
     private String status;
     /**停车服务类型*/
-    @TableField("server_types")
-    private List<String> serverTypes;
+    @TableField("services")
+    private String services;
     /**停车场服务商*/
-    @TableField("park_servers")
-    private List<String> parkServers;
+    @TableField("server")
+    private String server;
     /**停车场添加时间*/
     @TableField("add_time")
     private String addTime;
@@ -60,6 +67,12 @@ public class Park extends Model<Park> implements CommonEntityMethod{
     /**备用*/
     @TableField("remark")
     private String remark;
+    /**纬度*/
+    @TableField("latitude")
+    private BigDecimal latitude;
+    /**经度*/
+    @TableField("longitude")
+    private BigDecimal longitude;
 
     public Long getId() {
         return id;
@@ -109,20 +122,20 @@ public class Park extends Model<Park> implements CommonEntityMethod{
         this.status = status;
     }
 
-    public List<String> getServerTypes() {
-        return serverTypes;
+    public String getServices() {
+        return services;
     }
 
-    public void setServerTypes(List<String> serverTypes) {
-        this.serverTypes = serverTypes;
+    public void setServices(String services) {
+        this.services = services;
     }
 
-    public List<String> getParkServers() {
-        return parkServers;
+    public String getServer() {
+        return server;
     }
 
-    public void setParkServers(List<String> parkServers) {
-        this.parkServers = parkServers;
+    public void setServer(String server) {
+        this.server = server;
     }
 
     public String getAddTime() {
@@ -181,17 +194,42 @@ public class Park extends Model<Park> implements CommonEntityMethod{
         this.remark = remark;
     }
 
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public BigDecimal getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(BigDecimal longitude) {
+        this.longitude = longitude;
+    }
+
+    public BigDecimal getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(BigDecimal latitude) {
+        this.latitude = latitude;
+    }
+
     @Override
     public String toString() {
         return "Park{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", province='" + province + '\'' +
                 ", city='" + city + '\'' +
                 ", area='" + area + '\'' +
                 ", address='" + address + '\'' +
                 ", status='" + status + '\'' +
-                ", serverTypes=" + serverTypes +
-                ", parkServers=" + parkServers +
+                ", services='" + services + '\'' +
+                ", server='" + server + '\'' +
                 ", addTime='" + addTime + '\'' +
                 ", adderId=" + adderId +
                 ", adderName='" + adderName + '\'' +
@@ -199,6 +237,8 @@ public class Park extends Model<Park> implements CommonEntityMethod{
                 ", modiferId=" + modiferId +
                 ", modiferName='" + modiferName + '\'' +
                 ", remark='" + remark + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
                 '}';
     }
 
