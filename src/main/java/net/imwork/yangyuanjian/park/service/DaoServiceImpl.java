@@ -12,28 +12,8 @@ import javax.annotation.Resource;
  */
 @Service("daoService")
 public class DaoServiceImpl implements DaoService{
-    private CustomerInfoDao customerInfoDao;
-    private ManagerDao managerDao;
     @Resource
     private ParkDao parkDao;
-    private ParkRequestDao parkRequestDao;
-    private ParkServerDao parkServerDao;
-
-    public CustomerInfoDao getCustomerInfoDao() {
-        return customerInfoDao;
-    }
-
-    public void setCustomerInfoDao(CustomerInfoDao customerInfoDao) {
-        this.customerInfoDao = customerInfoDao;
-    }
-
-    public ManagerDao getManagerDao() {
-        return managerDao;
-    }
-
-    public void setManagerDao(ManagerDao managerDao) {
-        this.managerDao = managerDao;
-    }
 
     public ParkDao getParkDao() {
         return parkDao;
@@ -43,19 +23,4 @@ public class DaoServiceImpl implements DaoService{
         this.parkDao = parkDao;
     }
 
-    public ParkRequestDao getParkRequestDao() {
-        return parkRequestDao;
-    }
-
-    public void setParkRequestDao(ParkRequestDao parkRequestDao) {
-        this.parkRequestDao = parkRequestDao;
-    }
-
-    public ParkServerDao getParkServerDao() {
-        return parkServerDao;
-    }
-
-    public void setParkServerDao(ParkServerDao parkServerDao) {
-        this.parkServerDao = parkServerDao;
-    }
 }

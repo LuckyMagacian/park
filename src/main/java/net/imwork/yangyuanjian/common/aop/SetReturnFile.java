@@ -1,6 +1,5 @@
 package net.imwork.yangyuanjian.common.aop;
 
-import net.imwork.yangyuanjian.common.annotation.EasyLog;
 import net.imwork.yangyuanjian.common.annotation.ReturnFile;
 import net.imwork.yangyuanjian.common.assist.LogFactory;
 import net.imwork.yangyuanjian.common.enums.HttpReturnType;
@@ -9,11 +8,8 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
@@ -54,9 +50,9 @@ public class SetReturnFile {
      * @return
      */
     private HttpReturnType getReturnType(Method method){
-        Annotation type=method.getAnnotation(net.imwork.yangyuanjian.common.annotation.ReturnFile.class);
+        Annotation type=method.getAnnotation(ReturnFile.class);
         if(type!=null){
-            return ((net.imwork.yangyuanjian.common.annotation.ReturnFile) type).value();
+            return ((ReturnFile) type).value();
         }else
             return null;
     }

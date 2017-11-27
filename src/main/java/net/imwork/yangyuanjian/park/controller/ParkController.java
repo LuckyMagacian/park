@@ -254,7 +254,7 @@ public class ParkController {
 
         return message.toJson();
     }
-
+    @EasyLog(LogFactory.LogLevel.DEBUG)
     @SetUtf8
     @ResponseBody
     @RequestMapping(value = "test",produces="application/json;charset=utf-8")

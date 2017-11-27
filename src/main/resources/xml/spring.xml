@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
@@ -27,7 +28,7 @@
     <!--&lt;!&ndash; 启用aop切入 &ndash;&gt;-->
     <aop:aspectj-autoproxy expose-proxy="true"  proxy-target-class="true"/>
     <!-- 扫描包 -->
-    <context:component-scan base-package="net.imwork.yangyuanjian.*" />
+    <context:component-scan base-package="net.imwork.yangyuanjian.park.*" />
     <!-- 配置拦截器
     <mvc:interceptors>
         <mvc:interceptor>
