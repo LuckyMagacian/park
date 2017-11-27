@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import static net.imwork.yangyuanjian.common.assist.CheckAssist.*;
 import static net.imwork.yangyuanjian.common.assist.RetMessage.*;
+import static net.imwork.yangyuanjian.park.assist.CheckAssist.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -105,7 +106,7 @@ public class ParkController {
     public String addPark(HttpServletRequest req,HttpServletResponse res){
         RetMessage message=new RetMessage();
         String name=req.getParameter("name");
-        if(CheckAssist.noteParkName(name)){
+        if(CheckAssist.noteParkName(name)||isNameOrAddress.negate().test(name)){
             message.setAll(FAIL,"停车场名称校验不通过!",null);
             return message.toJson();
         }
@@ -118,14 +119,21 @@ public class ParkController {
         String city=req.getParameter("city");
         String area=req.getParameter("area");
         String address=req.getParameter("address");
-        if(CheckAssist.notParkAddress(address)){
+        if(CheckAssist.notParkAddress(address)||isNameOrAddress.negate().test(address)){
             message.setAll(FAIL,"停车场地址校验不通过!",null);
             return message.toJson();
         }
 
         String server=req.getParameter("server");
+        if(notParkServer(server)){
+            message.setAll(FAIL,"服务商校验不通过!",null);
+            return message.toJson();
+        }
         String services=req.getParameter("services");
-
+        if(notParkServices(services)){
+            message.setAll(FAIL,"服务校验不通过!",null);
+            return message.toJson();
+        }
         Park park=new Park();
         park.setId(IdWorker.getId());
         park.setProvince(province);
@@ -237,11 +245,17 @@ public class ParkController {
 
 
         String server=req.getParameter("server");
-        if(server!=null&&!server.trim().isEmpty())
+        if(notParkServer(server)){
+            message.setAll(FAIL,"服务商校验不通过!",null);
+            return message.toJson();
+        } else
             park.setServer(server);
 
         String services=req.getParameter("services");
-        if(services!=null&&!services.trim().isEmpty())
+        if(notParkServices(services)){
+            message.setAll(FAIL,"服务校验不通过!",null);
+            return message.toJson();
+        } else
             park.setServices(services);
 
         Boolean result=park.updateById();
