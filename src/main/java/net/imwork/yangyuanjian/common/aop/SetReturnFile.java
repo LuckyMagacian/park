@@ -8,6 +8,8 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 
 import javax.servlet.http.HttpServletResponse;
 import java.lang.annotation.Annotation;
@@ -18,8 +20,9 @@ import java.lang.reflect.Method;
  */
 @Aspect
 //@Component
+@Order (Ordered.HIGHEST_PRECEDENCE)
 public class SetReturnFile {
-    @Pointcut("@within(net.imwork.yangyuanjian.common.annotation.ReturnFile)")
+    @Pointcut("@annotation(net.imwork.yangyuanjian.common.annotation.ReturnFile)")
     public void returnFile(){}
 
     @Around("returnFile()")

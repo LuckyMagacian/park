@@ -6,9 +6,9 @@ import net.imwork.yangyuanjian.common.interfaces.GetEnumType;
  * Created by thunderobot on 2017/11/18.
  */
 public enum ParkServerEnum implements GetEnumType{
-    XingBei("立方行呗","park24","01"),
-    LingMao("凌猫停车","linkMore","02"),
-    YiXiu("一咻停车","cabinApp","03");
+    XingBei("立方行呗","park24","1"),
+    LingMao("凌猫停车","linkMore","2"),
+    YiXiu("一咻停车","cabinApp","3");
     String name;
     String code;
     String id;

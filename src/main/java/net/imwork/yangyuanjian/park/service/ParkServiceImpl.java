@@ -21,8 +21,9 @@ import java.util.Map;
 /**
  * Created by thunderobot on 2017/11/18.
  */
-@EasyLog(LogFactory.LogLevel.INFO)
+
 @Service("parkService")
+@EasyLog(LogFactory.LogLevel.INFO)
 public class ParkServiceImpl implements ParkService{
     /**根据管理员id临时保存批量导入停车场文件*/
     @Resource

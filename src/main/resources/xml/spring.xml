@@ -26,9 +26,9 @@
     <!-- 支持@RequestMapping请求和Controller映射 -->
     <mvc:annotation-driven/>
     <!--&lt;!&ndash; 启用aop切入 &ndash;&gt;-->
-    <aop:aspectj-autoproxy expose-proxy="true"  proxy-target-class="true"/>
+    <aop:aspectj-autoproxy expose-proxy="true"/>
     <!-- 扫描包 -->
-    <context:component-scan base-package="net.imwork.yangyuanjian.park.*" />
+    <context:component-scan base-package="net.imwork.yangyuanjian.*" annotation-config="true"/>
     <!-- 配置拦截器
     <mvc:interceptors>
         <mvc:interceptor>

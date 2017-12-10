@@ -1,33 +1,30 @@
 package net.imwork.yangyuanjian.park.test;
 
-import com.baomidou.mybatisplus.toolkit.IdWorker;
+import net.imwork.yangyuanjian.common.aop.AddLog;
+import net.imwork.yangyuanjian.common.aop.SessionCharset;
 import net.imwork.yangyuanjian.common.assist.LogFactory;
-import net.imwork.yangyuanjian.common.assist.TimeUtil;
-import net.imwork.yangyuanjian.park.consts.enums.ParkStatus;
 import net.imwork.yangyuanjian.park.controller.ParkController;
-import net.imwork.yangyuanjian.park.entity.Park;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import sun.rmi.runtime.Log;
 
-import javax.annotation.Resource;
-import java.math.BigDecimal;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Arrays;
 
 public class TestSpring {
     private ParkController controller;
+    ApplicationContext ac;
     @Before
     public void init(){
         LogFactory.setLogLevel(LogFactory.LogLevel.DEBUG);
         LogFactory.init();
-        ApplicationContext ac=new ClassPathXmlApplicationContext("xml/spring.xml");
+        ac=new ClassPathXmlApplicationContext("xml/spring.xml");
         controller=ac.getBean(ParkController.class);
     }
 
@@ -80,23 +77,28 @@ public class TestSpring {
         System.out.println(controller.queryParkInfo(req,res));
     }
     @Test
-    public void testAddParks(){
+    public void testAddParks() throws IOException {
         LogFactory.init();
+        File file = new File("park.xlsx");
+        FileInputStream fin=new FileInputStream(file);
+        byte[] bytes=new byte[1024*1024];
+        int byteSize=fin.read(bytes);
+        bytes= Arrays.copyOf(bytes,byteSize);
         MockHttpServletRequest  req=new MockHttpServletRequest();
+        req.setContent(bytes);
         MockHttpServletResponse res=new MockHttpServletResponse();
+        System.out.println(controller.addParks(req,res));
     }
     @Test
     public void testSureAddPark(){
-        LogFactory.init();
-        MockHttpServletRequest  req=new MockHttpServletRequest();
-        MockHttpServletResponse res=new MockHttpServletResponse();
     }
     @Test
     public void testTest(){
         LogFactory.init();
         MockHttpServletRequest  req=new MockHttpServletRequest();
         MockHttpServletResponse res=new MockHttpServletResponse();
-        System.out.println(controller.test(req,res));
+        System.err.println(ac.getBean(SessionCharset.class));
+        System.out.println(controller.queryParkInfo(req,res));
     }
     @Test
     public void testNone(){

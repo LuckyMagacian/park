@@ -6,9 +6,9 @@ import net.imwork.yangyuanjian.common.interfaces.GetEnumType;
  * Created by thunderobot on 2017/11/18.
  */
 public enum ServerTypeEnum implements GetEnumType {
-    Pay("主动付费","01"),
-    Appoint("预约","02"),
-    Buckle("代扣","03");
+    Pay("主动付费","1"),
+    Appoint("预约","2"),
+    Buckle("代扣","3");
 
     String serverName;
     String id;
