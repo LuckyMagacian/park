@@ -1,6 +1,9 @@
 package net.imwork.yangyuanjian.park.test;
 
+import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.plugins.Page;
 import net.imwork.yangyuanjian.common.assist.LogFactory;
+import net.imwork.yangyuanjian.park.entity.Park;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,8 +17,6 @@ public class TestAll {
 
     @Before
     public void init(){
-        LogFactory.setLogLevel(LogFactory.LogLevel.DEBUG);
-        LogFactory.init();
     }
 
     @Test
@@ -23,4 +24,11 @@ public class TestAll {
         ApplicationContext ac=new ClassPathXmlApplicationContext("xml/spring.xml");
         System.out.println(ac);
     }
+    @Test
+    public void test1(){
+        Page page=new Page<Park>(1,10);
+        page.setRecords(null);
+        System.out.println(JSON.toJSON(page));
+    }
+
 }

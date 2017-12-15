@@ -95,8 +95,10 @@ public class ParkController {
             wrapper.like("server",server);
 
         List<Park> parks = parkService.queryParks(wrapper,page);
-
-        message.setAll(SUCCESS,"查询成功!",(ArrayList)parks);
+        Map<String,Object> map=new HashMap<>();
+        map.put("page",page);
+        map.put("list",parks);
+        message.setAll(SUCCESS,"查询成功!", (Serializable) map);
 
         return message.toJson();
     }
