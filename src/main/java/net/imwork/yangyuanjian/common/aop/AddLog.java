@@ -7,7 +7,10 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -20,50 +23,44 @@ import java.util.Map;
 */
 @Aspect
 @Component
+@Order(Ordered.HIGHEST_PRECEDENCE+10)
 public class AddLog {
 
+    @Pointcut("@annotation(net.imwork.yangyuanjian.common.annotation.EasyLog)")
+    public void easyLogMethod(){}
     @Pointcut("@within(net.imwork.yangyuanjian.common.annotation.EasyLog)")
-    public void easyLog(){}
+    public void easyLogClass(){}
 
-    @Around("easyLog()")
+    @Around("easyLogClass()||easyLogMethod()")
     public <T> T logDefault(ProceedingJoinPoint joinPoint){
-        T t=null;
-        //获取代理方法参数值
-        Object[] args=joinPoint.getArgs();
-        //获取代理目标类
-        Class clazz= joinPoint.getTarget().getClass();
-        Method method=null;
-        try {
-            //获取代理方法对象
-            method=((MethodSignature)joinPoint.getSignature()).getMethod();
-            LogFactory.LogLevel level=getLogLevel(method);
-//            Field methodInvocation=((MethodInvocationProceedingJoinPoint)joinPoint).getClass().getDeclaredField("methodInvocation");
-//            methodInvocation.setAccessible(true);
-//            method=((ReflectiveMethodInvocation)methodInvocation.get(joinPoint)).getMethod();
-            //记录参数
-            log(clazz,"try invoke \nclass:["+clazz.getName()+"]\nmethod:["+method+"]\narg:["+ Arrays.asList(args)+"]",level);
-            //调用方法
-            t= (T) joinPoint.proceed(args);
-            //若是集合类型则记录返回的数量,否则记录返回结果
-            if(t instanceof Collection){
-                Collection collection= (Collection) t;
-                log(clazz,"class:["+clazz.getName()+"]\nmethod:["+method.getName()+"]\nresultSize:["+collection.size()+"]\narg:["+ Arrays.asList(args)+"]",level);
-                LogFactory.debug(clazz,"class:["+clazz.getName()+"]\nmethod:["+method.getName()+"]\nresult:["+collection+"]\narg:["+ Arrays.asList(args)+"]");
-                return t;
-            }else if(t instanceof Map){
-                Map map= (Map) t;
-                log(clazz,"class:["+clazz.getName()+"]\nmethod:["+method.getName()+"]\nresultSize:["+map.size()+"]\narg:["+ Arrays.asList(args)+"]",level);
-                LogFactory.debug(clazz,"class:["+clazz.getName()+"]\nmethod:["+method.getName()+"]\nresult:["+map+"]\narg:["+ Arrays.asList(args)+"]");
-                return t;
-            }else{
-                log(clazz,"class:["+clazz.getName()+"]\nmethod:["+method.getName()+"]\nresult:["+t+"]\narg:["+ Arrays.asList(args)+"]",level);
+        AopJob<T> job = (clazz, method, args, point) -> {
+            T t = null;
+            try {
+                LogFactory.LogLevel level = getLogLevel(method);
+                log(clazz, "try invoke class:[" + clazz.getName() + "]method:[" + method + "]arg:[" + Arrays.asList(args) + "]", level);
+                t = (T) joinPoint.proceed(args);
+                //若是集合类型则记录返回的数量,否则记录返回结果
+                if (t instanceof Collection) {
+                    Collection collection = (Collection) t;
+                    log(clazz, "class:[" + clazz.getName() + "]method:[" + method.getName() + "]resultSize:[" + collection.size() + "]arg:[" + Arrays.asList(args) + "]", level);
+                    LogFactory.debug(clazz, "class:[" + clazz.getName() + "]method:[" + method.getName() + "]result:[" + collection + "]arg:[" + Arrays.asList(args) + "]");
+                    return t;
+                } else if (t instanceof Map) {
+                    Map map = (Map) t;
+                    log(clazz, "class:[" + clazz.getName() + "]method:[" + method.getName() + "]resultSize:[" + map.size() + "]arg:[" + Arrays.asList(args) + "]", level);
+                    LogFactory.debug(clazz, "class:[" + clazz.getName() + "]method:[" + method.getName() + "]result:[" + map + "]arg:[" + Arrays.asList(args) + "]");
+                    return t;
+                } else {
+                    log(clazz, "invoke class:[" + clazz.getName() + "]method:[" + method.getName() + "]arg:[" + Arrays.asList(args) + "]result:[" + t + "]", level);
+                    return t;
+                }
+            } catch (Throwable throwable) {
+                //记录异常
+                LogFactory.error(clazz, "occured exception ["+throwable+"]!class:[" + clazz.getName() + "]method[" + method + "] arg:[" + Arrays.asList(args) + "]", throwable);
                 return t;
             }
-        } catch (Throwable e) {
-            //记录异常
-            LogFactory.error(clazz,"class:["+clazz.getName()+"]\nmethod["+method+"] occured exception !\narg:["+ Arrays.asList(args)+"]",e);
-            return t;
-        }
+        };
+        return AopJob.workJob(job, joinPoint);
     }
 
     public void log(Class clazz, String mesage, LogFactory.LogLevel level){

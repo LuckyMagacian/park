@@ -1,7 +1,6 @@
 package net.imwork.yangyuanjian.park.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.toolkit.IdWorker;
@@ -15,48 +14,54 @@ import net.imwork.yangyuanjian.park.assist.CheckExcel;
 import net.imwork.yangyuanjian.park.consts.enums.ParkStatus;
 import net.imwork.yangyuanjian.park.entity.Park;
 import net.imwork.yangyuanjian.park.service.ParkService;
-import org.junit.internal.runners.statements.Fail;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import static net.imwork.yangyuanjian.common.assist.CheckAssist.*;
-import static net.imwork.yangyuanjian.common.assist.RetMessage.*;
-import static net.imwork.yangyuanjian.park.assist.CheckAssist.*;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static net.imwork.yangyuanjian.common.assist.CheckAssist.isNameOrAddress;
+import static net.imwork.yangyuanjian.common.assist.CheckAssist.isNullOrEmpty;
+import static net.imwork.yangyuanjian.common.assist.RetMessage.*;
+import static net.imwork.yangyuanjian.park.assist.CheckAssist.notParkServer;
+import static net.imwork.yangyuanjian.park.assist.CheckAssist.notParkServices;
 
 /**
  * Created by thunderobot on 2017/11/18.
  */
-@EasyLog(LogFactory.LogLevel.INFO)
+
 @Controller
+@EasyLog(LogFactory.LogLevel.INFO)
 public class ParkController {
     @Resource
     private ParkService parkService;
     private Map<String,File> files=new HashMap<>();
     private Map<String,Boolean> chekResult=new HashMap<>();
 
-    @RequestMapping(value = "queryInfo" ,produces="application/json;charset=utf-8")
-    @ResponseBody
     @SetUtf8
+    @ResponseBody
+    @RequestMapping(value = "queryInfo" ,produces="application/json;charset=utf-8")
     public String queryParkInfo(HttpServletRequest req, HttpServletResponse res){
         RetMessage message=new RetMessage();
         String parkIdStr=req.getParameter("parkId");
+        if(isNullOrEmpty.test(parkIdStr))
+            return new RetMessage(FAIL,"停车场编号为空!",null).toJson();
         Long parkId=Long.valueOf(parkIdStr);
         Park park=parkService.queryParkInfo(parkId);
         message.setAll(SUCCESS,"查询成功!",park);
         return message.toJson();
     }
-    @RequestMapping(value = "queryParks",produces="application/json;charset=utf-8")
-    @ResponseBody
     @SetUtf8
+    @ResponseBody
+    @RequestMapping(value = "queryParks",produces="application/json;charset=utf-8")
     public String queryParks(HttpServletRequest req,HttpServletResponse res){
         RetMessage message=new RetMessage();
 
@@ -102,9 +107,10 @@ public class ParkController {
 
         return message.toJson();
     }
-    @RequestMapping(value = "addPark",produces="application/json;charset=utf-8")
-    @ResponseBody
+
     @SetUtf8
+    @ResponseBody
+    @RequestMapping(value = "addPark",produces="application/json;charset=utf-8")
     public String addPark(HttpServletRequest req,HttpServletResponse res){
         RetMessage message=new RetMessage();
         String name=req.getParameter("name");
@@ -112,10 +118,8 @@ public class ParkController {
             message.setAll(FAIL,"停车场名称校验不通过!",null);
             return message.toJson();
         }
-        //todo  待处理 经纬度
         String longitudeStr=req.getParameter("longitude");
         String latitudeStr=req.getParameter("latitude");
-
 
         String province=req.getParameter("province");
         String city=req.getParameter("city");
@@ -155,27 +159,22 @@ public class ParkController {
         message.setAll(SUCCESS,"添加成功!",result);
         return message.toJson();
     }
-    @RequestMapping(value = "addParks",produces="application/json;charset=utf-8")
-    @ResponseBody
     @SetUtf8
+    @ResponseBody
+    @RequestMapping(value = "addParks",produces="application/json;charset=utf-8")
     public String addParks(HttpServletRequest req,HttpServletResponse res){
         RetMessage message=new RetMessage();
         String sessionId=req.getSession().getId();
         File file=new File(sessionId+".xls");
+        FileOutputStream fout = null;
         try {
-            InputStreamReader reader=new InputStreamReader(req.getInputStream(),"utf-8");
-            BufferedReader buffer=new BufferedReader(reader);
-            String line=null;
-
-            FileOutputStream fout=new FileOutputStream(file);
-            PrintWriter writer=new PrintWriter(new OutputStreamWriter(fout,"utf-8"));
-
-            while ((line=buffer.readLine())!=null){
-                writer.append(line);
-            }
-            writer.flush();
+            byte[] content=new byte[1024*1024];
+            int  byteSize=req.getInputStream().read(content);
+            content= Arrays.copyOf(content,byteSize);
+            fout=new FileOutputStream(file);
+            fout.write(content);
+            fout.flush();
             files.put(sessionId,file);
-
             List<String> list = CheckExcel.checkFile(file,sessionId);
             if(list==null||list.isEmpty()){
                 message.setAll(SUCCESS,"文件校验通过!",null);
@@ -184,9 +183,19 @@ public class ParkController {
                 message.setAll(FAIL,"文件校验不通过!", (Serializable) list);
                 chekResult.put(sessionId,false);
             }
-        } catch (IOException e) {
+        } catch ( Exception e) {
+            LogFactory.error(this,"批量添加停车场时发生异常!",e);
             message.setAll(ERROR,"上传文件发生异常!",null);
         } finally {
+            if(fout!=null)
+                try {
+                    fout.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            if(file.exists()){
+                file.delete();
+            }
             return message.toJson();
         }
     }
@@ -209,6 +218,7 @@ public class ParkController {
         }
         return message.toJson();
     }
+
     @SetUtf8
     @ResponseBody
     @RequestMapping(value = "modifyPark",produces="application/json;charset=utf-8")
@@ -270,7 +280,6 @@ public class ParkController {
 
         return message.toJson();
     }
-    @EasyLog(LogFactory.LogLevel.DEBUG)
     @SetUtf8
     @ResponseBody
     @RequestMapping(value = "test",produces="application/json;charset=utf-8")

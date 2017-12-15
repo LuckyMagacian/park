@@ -1,5 +1,7 @@
 package net.imwork.yangyuanjian.park.service;
 
+import net.imwork.yangyuanjian.common.annotation.EasyLog;
+import net.imwork.yangyuanjian.common.assist.LogFactory;
 import net.imwork.yangyuanjian.park.dao.*;
 import net.imwork.yangyuanjian.park.entity.Manager;
 import net.imwork.yangyuanjian.park.entity.Park;
@@ -11,6 +13,7 @@ import javax.annotation.Resource;
  * Created by thunderobot on 2017/11/18.
  */
 @Service("daoService")
+@EasyLog(LogFactory.LogLevel.DEBUG)
 public class DaoServiceImpl implements DaoService{
     @Resource
     private ParkDao parkDao;
