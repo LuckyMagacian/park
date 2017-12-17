@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.3.xsd
+        http://www.springframework.org/schema/jdbc
+        http://www.springframework.org/schema/jdbc/spring-jdbc-4.3.xsd
+        http://www.springframework.org/schema/jee
+        http://www.springframework.org/schema/jee/spring-jee-4.3.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util-4.3.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd">
+    <!--&lt;!&ndash; 启用事务管理 &ndash;&gt;-->
+    <!--<tx:annotation-driven transaction-manager="txManager" />-->
+    <!-- 数据库配置 -->
+    <util:properties id="dbconfig" location="classpath:properties/jdbc.properties"></util:properties>
+    <bean id="ds" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName"           value="#{dbconfig.driver}"></property>
+        <property name="url"                       value="#{dbconfig.url}"></property>
+        <property name="username"                  value="#{dbconfig.username}"></property>
+        <property name="password"                  value="#{dbconfig.password}"></property>
+        <property name="initialSize"               value="#{dbconfig.initialSize}"></property>
+        <property name="maxActive"                 value="#{dbconfig.maxActive}"></property>
+        <property name="maxIdle"                   value="#{dbconfig.maxIdle}"></property>
+        <property name="minIdle"                   value="#{dbconfig.minIdle}"></property>
+        <property name="maxWait"                   value="#{dbconfig.maxWait}"></property>
+        <property name="validationQuery"           value="#{dbconfig.validationQuery}"></property>
+        <property name="testOnBorrow"              value="#{dbconfig.testOnBorrow}"></property>
+    </bean>
+
+    <!-- 配置mybatis-plus全局变量 -->
+    <bean id="globalConfig" class="com.baomidou.mybatisplus.entity.GlobalConfiguration">
+        <property name="idType" value="2" />
+        <!-- 全局表为下划线命名设置 true -->
+        <property name="dbColumnUnderline" value="true" />
+        <property name="dbType" value="mysql"></property>
+    </bean>
+
+    <!-- mybatis-plus配置 -->
+    <bean id="ssfb" class="com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean">
+        <property name="dataSource" ref="ds"></property>
+        <property name="mapperLocations" value="classpath:net/imwork/yangyuanjian/park/dao/*.xml"></property>
+        <property name="plugins">
+            <list>
+                <!-- 分页插件配置 -->
+                <bean id="paginationInterceptor" class="com.baomidou.mybatisplus.plugins.PaginationInterceptor">
+                    <property name="dialectType" value="mysql"/>
+                </bean>
+            </list>
+        </property>
+        <!-- 全局配置注入 -->
+        <property name="globalConfig" ref="globalConfig"/>
+    </bean>
+
+
+    <!--&lt;!&ndash; 配置事务管理数据源 &ndash;&gt;-->
+    <!--<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">-->
+        <!--<property name="dataSource" ref="ds"></property>-->
+    <!--</bean>-->
+    <!--mapper扫描-->
+    <bean id="mappers" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="net.imwork.yangyuanjian.park.dao*"></property>
+    </bean>
+</beans>

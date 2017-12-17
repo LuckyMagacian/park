@@ -22,7 +22,7 @@ public class TestSpring {
     ApplicationContext ac;
     @Before
     public void init(){
-        LogFactory.setLogLevel(LogFactory.LogLevel.DEBUG);
+        LogFactory.setLogLevel(LogFactory.LogLevel.INFO);
         LogFactory.init();
         ac=new ClassPathXmlApplicationContext("xml/spring.xml");
         controller=ac.getBean(ParkController.class);
@@ -72,9 +72,9 @@ public class TestSpring {
         MockHttpServletRequest  req=new MockHttpServletRequest();
         MockHttpServletResponse res=new MockHttpServletResponse();
         req.addParameter("parkId","935170464077111297");
-        req.addParameter("parkName","嘿嘿恶化");
+        req.addParameter("name","嘿嘿恶化");
         System.out.println(controller.modifyPark(req,res));
-        System.out.println(controller.queryParkInfo(req,res));
+//        System.out.println(controller.queryParkInfo(req,res));
     }
     @Test
     public void testAddParks() throws IOException {
@@ -88,20 +88,22 @@ public class TestSpring {
         req.setContent(bytes);
         MockHttpServletResponse res=new MockHttpServletResponse();
         System.out.println(controller.addParks(req,res));
+
+        System.out.println(controller.sureAddParks(req,res));
     }
+
     @Test
-    public void testSureAddPark(){
-    }
-    @Test
-    public void testTest(){
-        LogFactory.init();
+    public void testFreeze(){
         MockHttpServletRequest  req=new MockHttpServletRequest();
+        req.addParameter("parkId","935170464077111297");
         MockHttpServletResponse res=new MockHttpServletResponse();
-        System.err.println(ac.getBean(SessionCharset.class));
-        System.out.println(controller.queryParkInfo(req,res));
+        System.out.println(controller.freezePark(req,res));
     }
     @Test
-    public void testNone(){
-        System.out.println(controller);
+    public void testUnfreeze(){
+        MockHttpServletRequest  req=new MockHttpServletRequest();
+        req.addParameter("parkId","935170464077111297");
+        MockHttpServletResponse res=new MockHttpServletResponse();
+        System.out.println(controller.unfreezePark(req,res));
     }
 }

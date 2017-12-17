@@ -8,10 +8,7 @@ import net.imwork.yangyuanjian.park.entity.Park;
 import static net.imwork.yangyuanjian.park.assist.CheckAssist.*;
 import static net.imwork.yangyuanjian.common.assist.CheckAssist.*;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 @EasyLog(LogFactory.LogLevel.DEBUG)
@@ -32,7 +29,7 @@ public class CheckExcel {
 
         //todo 若增加了经纬度 需要将colsize改为8
         //excel为   名称 省 市 区 地址 服务商 提供的服务     {经度  纬度}
-        while((temp=assist.readLine(0,rowNum++,0,6))!=null){
+        while((temp=assist.readLine(0,rowNum++,0,7))!=null){
             String parkName=temp.get(0);
             if(noteParkName(parkName)||isNameOrAddress.negate().test(parkName)){
                 LogFactory.debug(CheckExcel.class,"名称校验不通过!");
@@ -72,6 +69,12 @@ public class CheckExcel {
             String service=temp.get(6);
             if(notParkServices(service)){
                 LogFactory.debug(CheckExcel.class,"服务校验不通过!");
+                addWrongDate.accept(temp);
+                continue;
+            }
+            String status=temp.get(7);
+            if(status==null||status.isEmpty()|| !Arrays.asList(new String[]{"1","2"}).contains(status)){
+                LogFactory.debug(CheckExcel.class,"停车场状态校验不通过!");
                 addWrongDate.accept(temp);
                 continue;
             }

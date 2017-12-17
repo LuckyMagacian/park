@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.toolkit.IdWorker;
 import net.imwork.yangyuanjian.common.annotation.EasyLog;
 import net.imwork.yangyuanjian.common.assist.LogFactory;
+import net.imwork.yangyuanjian.common.assist.TimeUtil;
 import net.imwork.yangyuanjian.park.consts.enums.ParkStatus;
 import net.imwork.yangyuanjian.park.entity.Park;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,7 @@ public class ParkServiceImpl implements ParkService{
             String address=temp.get(4);
             String server=temp.get(5);
             String service=temp.get(6);
+            String status=temp.get(7);
 
             Park park=new Park();
             park.setId(IdWorker.getId());
@@ -55,6 +57,8 @@ public class ParkServiceImpl implements ParkService{
             park.setAddress(address);
             park.setServer(server);
             park.setServices(service);
+            park.setAddTime(TimeUtil.getDateTime());
+            park.setStatus(status);
             park.insert();
         });
         return true;

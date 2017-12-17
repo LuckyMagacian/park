@@ -9,5 +9,6 @@ public interface PredicateAssist {
     Predicate<String> isNullOrEmpty=e->isNull.test(e)||e.isEmpty();
     Predicate<String> notNullOrEmpty=isNullOrEmpty.negate();
 
-    
+    Predicate<String> isInteger=e->e.matches("[0-9]{1,100}");
+    Predicate<String> isDeciaml=e->e.matches("[0-9]+\\.[0-9]{1,20}");
 }
