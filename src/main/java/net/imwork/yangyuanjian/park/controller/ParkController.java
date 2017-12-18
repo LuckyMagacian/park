@@ -227,7 +227,8 @@ public class ParkController {
     public String addParks(HttpServletRequest req, HttpServletResponse res) {
         LogFactory.info(this,req.getRemoteAddr()+"尝试批量添加停车场!");
         RetMessage message = new RetMessage();
-        String sessionId = req.getSession().getId();
+        //修改为ip?或者前端传入的固定参数
+        String sessionId = req.getRemoteAddr();
         File file = new File(sessionId + ".xls");
         FileOutputStream fout = null;
         try {
@@ -272,7 +273,8 @@ public class ParkController {
         try {
             LogFactory.info(this,req.getRemoteAddr()+"尝试确定添加停车场!");
             RetMessage message = new RetMessage();
-            String sessionId = req.getSession().getId();
+            //修改为ip?或者前端传入的固定参数
+       		String sessionId = req.getRemoteAddr();
             if (chekResult.get(sessionId) == null){
                 message.setAll(FAIL, "上传的文件校验结果不存在!", null);
             }
