@@ -11,7 +11,7 @@ public interface CheckAssist {
 
     Predicate<String> isInteger=e->e==null?false:e.matches("[0-9]+");
 
-    Predicate<String> isDecimal=e->e==null?false:e.matches("[0-9]+[0-9\\.]*]");
+    Predicate<String> isDeciaml=e->e.matches("[0-9]+\\.[0-9]{1,20}");
 
     Predicate<String> isNameOrAddress=e->e==null?false:e.matches("[\\u4e00-\\u9fa5a-zA-Z\\(\\)\\-\\[\\] ]+[\\u4e00-\\u9fa50-9a-zA-Z\\(\\)\\-\\[\\] ]*");
 
