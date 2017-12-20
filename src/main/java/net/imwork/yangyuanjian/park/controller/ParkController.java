@@ -17,7 +17,10 @@ import net.imwork.yangyuanjian.park.entity.Park;
 import net.imwork.yangyuanjian.park.service.ParkService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +28,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.reflect.Parameter;
 import java.math.BigDecimal;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -43,7 +49,7 @@ import static net.imwork.yangyuanjian.park.assist.CheckAssist.notParkServices;
 public class ParkController {
     @Resource
     private ParkService parkService;
-    private Map<String, File> files = new HashMap<>();
+//    private Map<String, File> files = new HashMap<>();
     private Map<String, Boolean> chekResult = new HashMap<>();
 
     @SetUtf8
@@ -234,21 +240,24 @@ public class ParkController {
     @SetUtf8
     @ResponseBody
     @RequestMapping (value = "addParks", produces = "application/json;charset=utf-8")
-    public String addParks(HttpServletRequest req, HttpServletResponse res) {
+    public String addParks(HttpServletRequest req, HttpServletResponse res,@RequestParam ("file") MultipartFile multifile) {
         LogFactory.info(this, req.getRemoteAddr() + "尝试批量添加停车场!");
         RetMessage message = new RetMessage();
         //修改为ip?或者前端传入的固定参数
         String sessionId = req.getRemoteAddr();
-        File file = new File(sessionId + ".xls");
+        File file = new File(sessionId + ".xlsx");
         FileOutputStream fout = null;
         try {
-            byte[] content = new byte[1024 * 1024];
-            int byteSize = req.getInputStream().read(content);
-            content = Arrays.copyOf(content, byteSize);
             fout = new FileOutputStream(file);
-            fout.write(content);
+            byte[] content = new byte[1024];
+            int byteSize = -1;
+            InputStream inputStream=multifile.getInputStream();
+            while((byteSize=inputStream.read(content))>0){
+                fout.write(content,0,byteSize);
+            }
             fout.flush();
-            files.put(sessionId, file);
+            fout.close();
+//            files.put(sessionId, file);
             List<String> list = CheckExcel.checkFile(file, sessionId);
             if (list == null || list.isEmpty()) {
                 message.setAll(SUCCESS, "文件校验通过!", null);
@@ -266,12 +275,11 @@ public class ParkController {
             if (fout != null)
                 try {
                     fout.close();
+                    file.deleteOnExit();
+                    Files.deleteIfExists(Paths.get(URI.create(file.getAbsolutePath())));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            if (file.exists()) {
-                file.delete();
-            }
             return message.toJson();
         }
     }
@@ -296,6 +304,7 @@ public class ParkController {
                 if (result) {
                     LogFactory.info(this, req.getRemoteAddr() + "确定添加停车场成功!");
                     message.setAll(SUCCESS, "添加成功!", null);
+
                 } else
                     message.setAll(FAIL, "批量添加失败!", null);
             }
