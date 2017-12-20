@@ -40,4 +40,11 @@
     </mvc:interceptors>
     -->
     <import resource="mybatis.xml"></import>
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 设定默认编码 -->
+        <property name="defaultEncoding" value="UTF-8" />
+        <!-- 设定文件上传的最大值5MB，5*1024*1024 -->
+        <property name="maxUploadSize" value="5242880" />
+        <property name="maxInMemorySize" value="4096" />
+    </bean>
 </beans>

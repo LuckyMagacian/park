@@ -10,11 +10,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 
 public class TestSpring {
@@ -77,9 +79,9 @@ public class TestSpring {
 //        System.out.println(controller.queryParkInfo(req,res));
     }
     @Test
-    public void testAddParks() throws IOException {
+    public void testAddParks() throws IOException, URISyntaxException {
         LogFactory.init();
-        File file = new File("park.xlsx");
+        File file = new File(TestSpring.class.getClassLoader().getResource("").toURI().getPath()+"park.xlsx");
         FileInputStream fin=new FileInputStream(file);
         byte[] bytes=new byte[1024*1024];
         int byteSize=fin.read(bytes);
@@ -87,7 +89,8 @@ public class TestSpring {
         MockHttpServletRequest  req=new MockHttpServletRequest();
         req.setContent(bytes);
         MockHttpServletResponse res=new MockHttpServletResponse();
-        System.out.println(controller.addParks(req,res));
+        MockMultipartFile multipartFile=new MockMultipartFile("testImport.xlsx",bytes);
+        System.out.println(controller.addParks(req,res,multipartFile));
 
         System.out.println(controller.sureAddParks(req,res));
     }
