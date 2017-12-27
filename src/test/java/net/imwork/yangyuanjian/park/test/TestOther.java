@@ -13,5 +13,8 @@ public class TestOther {
         System.out.println(file.exists());
         ExcelAssist assist=new ExcelAssist(file);
     }
-
+    @Test
+    public void test1(){
+        System.out.println("浙江三立开元名都大酒店停车场".length());
+    }
 }

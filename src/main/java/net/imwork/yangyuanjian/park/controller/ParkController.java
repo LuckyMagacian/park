@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.toolkit.IdWorker;
 import net.imwork.yangyuanjian.common.annotation.EasyLog;
 import net.imwork.yangyuanjian.common.annotation.Secret;
 import net.imwork.yangyuanjian.common.annotation.SetUtf8;
+import net.imwork.yangyuanjian.common.assist.IpAssist;
 import net.imwork.yangyuanjian.common.assist.LogFactory;
 import net.imwork.yangyuanjian.common.assist.RetMessage;
 import net.imwork.yangyuanjian.common.assist.TimeUtil;
@@ -152,7 +153,7 @@ public class ParkController {
     @RequestMapping (value = "addPark", produces = "application/json;charset=utf-8")
     public String addPark(HttpServletRequest req, HttpServletResponse res) {
         try {
-            LogFactory.info(this, req.getRemoteAddr() + "尝试添加停车场!");
+            LogFactory.info(this, IpAssist.getIp(req) + "尝试添加停车场!");
             RetMessage message = new RetMessage();
             String name = req.getParameter("name");
             if (CheckAssist.noteParkName(name) || isNameOrAddress.negate().test(name)) {
@@ -200,7 +201,7 @@ public class ParkController {
             park.setLatitude(new BigDecimal(latitudeStr == null ? "0" : latitudeStr));
             Boolean result = parkService.addPark(park);
             message.setAll(SUCCESS, "添加成功!", result);
-            LogFactory.info(this, req.getRemoteAddr() + "添加停车场成功!" + park.toJson());
+            LogFactory.info(this, IpAssist.getIp(req) + "添加停车场成功!" + park.toJson());
             return message.toJson();
         } catch (Exception e) {
             LogFactory.error(this, "添加停车场时发生异常!", e);
@@ -241,10 +242,10 @@ public class ParkController {
     @ResponseBody
     @RequestMapping (value = "addParks", produces = "application/json;charset=utf-8")
     public String addParks(HttpServletRequest req, HttpServletResponse res,@RequestParam ("file") MultipartFile multifile) {
-        LogFactory.info(this, req.getRemoteAddr() + "尝试批量添加停车场!");
+        LogFactory.info(this, IpAssist.getIp(req) + "尝试批量添加停车场!");
         RetMessage message = new RetMessage();
         //修改为ip?或者前端传入的固定参数
-        String sessionId = req.getRemoteAddr();
+        String sessionId = IpAssist.getIp(req);
         File file = new File(sessionId + ".xlsx");
         FileOutputStream fout = null;
         try {
@@ -261,11 +262,11 @@ public class ParkController {
             List<String> list = CheckExcel.checkFile(file, sessionId);
             if (list == null || list.isEmpty()) {
                 message.setAll(SUCCESS, "文件校验通过!", null);
-                LogFactory.info(this, req.getRemoteAddr() + "添加停车场,文件校验通过!");
+                LogFactory.info(this, IpAssist.getIp(req) + "添加停车场,文件校验通过!");
                 chekResult.put(sessionId, true);
             } else {
                 message.setAll(FAIL, "文件校验不通过!", (Serializable) list);
-                LogFactory.info(this, req.getRemoteAddr() + "添加停车场,文件校验不通过!" + list);
+                LogFactory.info(this, IpAssist.getIp(req) + "添加停车场,文件校验不通过!" + list);
                 chekResult.put(sessionId, false);
             }
         } catch (Exception e) {
@@ -276,7 +277,7 @@ public class ParkController {
                 try {
                     fout.close();
                     file.deleteOnExit();
-                    Files.deleteIfExists(Paths.get(URI.create(file.getAbsolutePath())));
+//                    Files.deleteIfExists(Paths.get(URI.create(file.getAbsolutePath())));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -290,10 +291,10 @@ public class ParkController {
     @RequestMapping (value = "confirmAddParks", produces = "application/json;charset=utf-8")
     public String sureAddParks(HttpServletRequest req, HttpServletResponse res) {
         try {
-            LogFactory.info(this, req.getRemoteAddr() + "尝试确定添加停车场!");
+            LogFactory.info(this, IpAssist.getIp(req) + "尝试确定添加停车场!");
             RetMessage message = new RetMessage();
             //修改为ip?或者前端传入的固定参数
-            String sessionId = req.getRemoteAddr();
+            String sessionId = IpAssist.getIp(req);
             if (chekResult.get(sessionId) == null) {
                 message.setAll(FAIL, "上传的文件校验结果不存在!", null);
             }
@@ -302,7 +303,7 @@ public class ParkController {
                 if (result == null)
                     message.setAll(ERROR, "批量添加时异常!", null);
                 if (result) {
-                    LogFactory.info(this, req.getRemoteAddr() + "确定添加停车场成功!");
+                    LogFactory.info(this, IpAssist.getIp(req) + "确定添加停车场成功!");
                     message.setAll(SUCCESS, "添加成功!", null);
 
                 } else
@@ -326,7 +327,7 @@ public class ParkController {
             String parkIdStr = req.getParameter("parkId");
             Long parkId = Long.valueOf(parkIdStr);
             Park park = parkService.queryParkInfo(parkId);
-            LogFactory.info(this, req.getRemoteAddr() + "尝试修改停车场!" + park.toJson());
+            LogFactory.info(this, IpAssist.getIp(req) + "尝试修改停车场!" + park.toJson());
             String province = req.getParameter("province");
             if (province != null && !province.trim().isEmpty())
                 park.setProvince(province);
@@ -376,7 +377,7 @@ public class ParkController {
             if (result == null)
                 message.setAll(ERROR, "修改时发生异常!", null);
             if (result) {
-                LogFactory.info(this, req.getRemoteAddr() + "修改停车场成功!" + park.toJson());
+                LogFactory.info(this, IpAssist.getIp(req) + "修改停车场成功!" + park.toJson());
                 message.setAll(SUCCESS, "修改成功!", null);
             } else
                 message.setAll(FAIL, "修改失败!", null);
@@ -402,13 +403,13 @@ public class ParkController {
         }
         Long id = Long.parseLong(parkIdStr);
         Park park = parkService.queryParkInfo(id);
-        LogFactory.info(this, req.getRemoteAddr() + "尝试停用停车场!" + park.toJson());
+        LogFactory.info(this, IpAssist.getIp(req) + "尝试停用停车场!" + park.toJson());
         boolean result = parkService.freezePark(park);
         if (result) {
-            LogFactory.info(this, req.getRemoteAddr() + "停用停车场!成功" + park.toJson());
+            LogFactory.info(this, IpAssist.getIp(req) + "停用停车场!成功" + park.toJson());
             return new RetMessage(SUCCESS, "操作成功!", null).toJson();
         } else {
-            LogFactory.info(this, req.getRemoteAddr() + "停用停车场!失败" + park.toJson());
+            LogFactory.info(this, IpAssist.getIp(req) + "停用停车场!失败" + park.toJson());
             return new RetMessage(FAIL, "操作失败!", null).toJson();
         }
     }
@@ -427,13 +428,13 @@ public class ParkController {
         }
         Long id = Long.parseLong(parkIdStr);
         Park park = parkService.queryParkInfo(id);
-        LogFactory.info(this, req.getRemoteAddr() + "尝试启用停车场!" + park.toJson());
+        LogFactory.info(this, IpAssist.getIp(req) + "尝试启用停车场!" + park.toJson());
         boolean result = parkService.unfreezePark(park);
         if (result) {
-            LogFactory.info(this, req.getRemoteAddr() + "启用停车场成功!" + park.toJson());
+            LogFactory.info(this, IpAssist.getIp(req) + "启用停车场成功!" + park.toJson());
             return new RetMessage(SUCCESS, "操作成功!", null).toJson();
         } else {
-            LogFactory.info(this, req.getRemoteAddr() + "启用停车场失败!" + park.toJson());
+            LogFactory.info(this, IpAssist.getIp(req) + "启用停车场失败!" + park.toJson());
             return new RetMessage(FAIL, "操作失败!", null).toJson();
         }
     }
@@ -453,13 +454,13 @@ public class ParkController {
         }
         Long id = Long.parseLong(parkIdStr);
         Park park = parkService.queryParkInfo(id);
-        LogFactory.info(this, req.getRemoteAddr() + "尝试删除停车场!" + park.toJson());
+        LogFactory.info(this, IpAssist.getIp(req) + "尝试删除停车场!" + park.toJson());
         boolean result = parkService.delPark(park);
         if (result) {
-            LogFactory.info(this, req.getRemoteAddr() + "删除停车场成功!" + park.toJson());
+            LogFactory.info(this, IpAssist.getIp(req) + "删除停车场成功!" + park.toJson());
             return new RetMessage(SUCCESS, "操作成功!", null).toJson();
         } else {
-            LogFactory.info(this, req.getRemoteAddr() + "删除停车场失败!" + park.toJson());
+            LogFactory.info(this, IpAssist.getIp(req) + "删除停车场失败!" + park.toJson());
             return new RetMessage(FAIL, "操作失败!", null).toJson();
         }
     }

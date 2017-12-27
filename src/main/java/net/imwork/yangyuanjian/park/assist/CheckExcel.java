@@ -24,57 +24,59 @@ public class CheckExcel {
 
 
         Function<String,String> reduceThreeChar=(s)->s==null?null:s.isEmpty()?s.trim():s.length()<3?s:s.substring(0,s.length()-3);
-        Consumer<List<String>> addWrongDate=(l)->wrongData.add(reduceThreeChar.apply(l.stream().reduce("",(a,b)->a==null?null:a.toString()+(b==null?null:b.toString())+" , ")));;
+        Consumer<List<String>> addWrongDate=(l)->wrongData.add(reduceThreeChar.apply(l.stream().reduce("",(a,b)->a==null?null:a.toString()+(b==null?null:b.toString())+"|")));;
 
 
         //todo 若增加了经纬度 需要将colsize改为8
         //excel为   名称 省 市 区 地址 服务商 提供的服务     {经度  纬度}
         while((temp=assist.readLine(0,rowNum++,0,7))!=null){
             String parkName=temp.get(0);
-            if(noteParkName(parkName)||isNameOrAddress.negate().test(parkName)){
-                LogFactory.debug(CheckExcel.class,"名称校验不通过!");
+            if(noteParkName(parkName)){
+//            if(noteParkName(parkName)||isNameOrAddress.negate().test(parkName)){
+                LogFactory.debug(CheckExcel.class,"名称校验不通过!"+parkName);
                 addWrongDate.accept(temp);
                 continue;
             }
             String province=temp.get(1);
             if(isNameOrAddress.negate().test(province)){
-                LogFactory.debug(CheckExcel.class,"省份校验不通过!");
+                LogFactory.debug(CheckExcel.class,"省份校验不通过!"+province);
                 addWrongDate.accept(temp);
                 continue;
             }
             String city=temp.get(2);
             if(isNameOrAddress.negate().test(city)){
-                LogFactory.debug(CheckExcel.class,"城市校验不通过!");
+                LogFactory.debug(CheckExcel.class,"城市校验不通过!"+city);
                 addWrongDate.accept(temp);
                 continue;
             }
             String area=temp.get(3);
             if(isNameOrAddress.negate().test(area)){
-                LogFactory.debug(CheckExcel.class,"区域校验不通过!");
+                LogFactory.debug(CheckExcel.class,"区域校验不通过!"+area);
                 addWrongDate.accept(temp);
                 continue;
             }
             String address=temp.get(4);
-            if(notParkAddress(address)||isNameOrAddress.negate().test(area)){
-                LogFactory.debug(CheckExcel.class,"地址校验不通过!");
+            if(notParkAddress(address)){
+//            if(notParkAddress(address)||isNameOrAddress.negate().test(area)){
+                LogFactory.debug(CheckExcel.class,"地址校验不通过!"+address);
                 addWrongDate.accept(temp);
                 continue;
             }
             String server=temp.get(5);
             if(notParkServer(server)){
-                LogFactory.debug(CheckExcel.class,"服务商校验不通过!");
+                LogFactory.debug(CheckExcel.class,"服务商校验不通过!"+server);
                 addWrongDate.accept(temp);
                 continue;
             }
             String service=temp.get(6);
             if(notParkServices(service)){
-                LogFactory.debug(CheckExcel.class,"服务校验不通过!");
+                LogFactory.debug(CheckExcel.class,"服务校验不通过!"+service);
                 addWrongDate.accept(temp);
                 continue;
             }
             String status=temp.get(7);
             if(status==null||status.isEmpty()|| !Arrays.asList(new String[]{"1","2"}).contains(status)){
-                LogFactory.debug(CheckExcel.class,"停车场状态校验不通过!");
+                LogFactory.debug(CheckExcel.class,"停车场状态校验不通过!"+status);
                 addWrongDate.accept(temp);
                 continue;
             }

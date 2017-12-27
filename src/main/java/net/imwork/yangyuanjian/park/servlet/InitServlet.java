@@ -12,6 +12,7 @@ public class InitServlet extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	@Override
 	public void init(ServletConfig config) throws ServletException {
+		LogFactory.setLogLevel(LogFactory.LogLevel.DEBUG);
 		LogFactory.init();
 	}
 }

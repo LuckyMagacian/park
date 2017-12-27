@@ -13,7 +13,7 @@ public class CheckAssist {
     public static boolean noteParkName(String parkName){
         if(parkName==null)
             return true;
-        return parkName.length()>10;
+        return parkName.length()>30;
     }
 
     public static boolean notParkAddress(String parkAddress){
@@ -23,8 +23,13 @@ public class CheckAssist {
     }
 
     public static boolean notParkServer(String arg){
+        String[] strs=arg.split(",");
         List<String> servers= Stream.of(ParkServerEnum.values()).map(e->e.getId()).collect(Collectors.toList());
-        return !servers.contains(arg);
+        for(String each:strs){
+            if(!servers.contains(each))
+                return true;
+        }
+        return false;
     }
 
     public static boolean notParkServices(String arg){
